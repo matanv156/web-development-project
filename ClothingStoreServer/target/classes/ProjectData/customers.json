@@ -1,0 +1,12 @@
+[
+  { "id": 1, "fullName": "Alice Johnson", "phoneNumber": "052-5633156", "type": "NEW" },
+  { "id": 2, "fullName": "Bob Smith", "phoneNumber": "050-9961995", "type": "RETURNING" },
+  { "id": 3, "fullName": "Catherine Miller", "phoneNumber": "053-1234567", "type": "VIP" },
+  { "id": 4, "fullName": "David Brown", "phoneNumber": "052-7654321", "type": "NEW" },
+  { "id": 5, "fullName": "Eva Green", "phoneNumber": "050-3334567", "type": "RETURNING" },
+  { "id": 6, "fullName": "Frank White", "phoneNumber": "053-9876543", "type": "VIP" },
+  { "id": 7, "fullName": "Grace Black", "phoneNumber": "052-1112233", "type": "NEW" },
+  { "id": 8, "fullName": "Henry Adams", "phoneNumber": "050-2223344", "type": "RETURNING" },
+  { "id": 9, "fullName": "Ivy Thompson", "phoneNumber": "053-5556677", "type": "VIP" },
+  { "id": 10, "fullName": "Jack Wilson", "phoneNumber": "052-4445588", "type": "NEW" }
+]

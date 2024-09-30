@@ -1,0 +1,9 @@
+[
+  { "id": "031186332", "employeeNumber": 1, "password": "pass4word4", "fullName": "Alice Johnson", "phoneNumber": "052-5633156", "branchId": 1, "role": "Manager" },
+  { "id": "208661222", "employeeNumber": 2, "password": "Bob123", "fullName": "Bob Smith", "phoneNumber": "050-9961995", "branchId": 1, "role": "Shift Manager" },
+  { "id": "022961521", "employeeNumber": 3, "password": "Dan123", "fullName": "Dan Brown", "phoneNumber": "052-6123354", "branchId": 2, "role": "Shift Manager" },
+  { "id": "031556910", "employeeNumber": 4, "password": "Diana123", "fullName": "Diana Prince", "phoneNumber": "053-7889152", "branchId": 1, "role": "Cashier" },
+  { "id": "0295597712", "employeeNumber": 5, "password": "John123", "fullName": "John Marker", "phoneNumber": "052-56223198", "branchId": 1, "role": "Cashier" },
+  { "id": "208778658", "employeeNumber": 6, "password": "David123", "fullName": "David Start", "phoneNumber": "050-5503300", "branchId": 1, "role": "Seller" },
+  { "id": "208562113", "employeeNumber": 7, "password": "Michel123", "fullName": "Michel Scott", "phoneNumber": "053-6691212", "branchId": 1, "role": "Seller" }
+]
