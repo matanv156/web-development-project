@@ -8,8 +8,8 @@ import java.util.List;
 public class BranchServices{
     private final BranchDAOImpl branchDAO;
 
-    public BranchServices(BranchDAOImpl branchDAO) {
-        this.branchDAO = branchDAO;
+    public BranchServices() throws IOException {
+        this.branchDAO = new BranchDAOImpl();
     }
 
     public boolean add(Branch branch) throws IOException {
@@ -21,7 +21,7 @@ public class BranchServices{
     }
 
     public boolean delete(Branch branch) throws IOException {
-        return branchDAO.delete(branch.getId());
+        return branchDAO.delete(branch);
     }
 
     public Branch getById(int id) throws IOException {

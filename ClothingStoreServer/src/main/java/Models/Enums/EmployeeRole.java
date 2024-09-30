@@ -1,7 +1,7 @@
 package Models.Enums;
 
 public enum EmployeeRole {
-    ADMIN,
+    MANAGER,
     SHIFT_MANAGER,
     CASHIER,
     SELLER

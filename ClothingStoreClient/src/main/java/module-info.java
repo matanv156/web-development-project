@@ -1,11 +1,14 @@
 module com.example.clothingstoreclient {
+
+    // Required modules
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.base;
     requires com.google.gson;
 
-    opens com.example.client to javafx.fxml;
-    exports com.example.client;
+    opens com.example.client.Models to com.google.gson;
 
     exports com.example.client.Models;
-    opens com.example.client.Models to com.google.gson, javafx.base, javafx.fxml;
+    exports com.example.client to javafx.graphics;
+    exports com.example.client.Screens to javafx.graphics;
 }

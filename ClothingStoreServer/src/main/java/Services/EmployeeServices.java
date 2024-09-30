@@ -8,8 +8,8 @@ import java.util.List;
 public class EmployeeServices {
     private final EmployeeDAOImpl employeeDAO;
 
-    public EmployeeServices(EmployeeDAOImpl employeeDAO) {
-        this.employeeDAO = employeeDAO;
+    public EmployeeServices() throws IOException {
+        this.employeeDAO = new EmployeeDAOImpl();
     }
 
     public boolean add(Employee employee) throws IOException {
@@ -21,10 +21,10 @@ public class EmployeeServices {
     }
 
     public boolean delete(Employee employee) throws IOException {
-        return employeeDAO.delete(Integer.parseInt(employee.getId()));
+        return employeeDAO.delete(employee);
     }
 
-    public Employee getById(int id) throws IOException {
+    public Employee getById(String id) throws IOException {
         return employeeDAO.get(id);
     }
 

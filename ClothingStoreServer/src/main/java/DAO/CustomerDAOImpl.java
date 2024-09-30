@@ -10,19 +10,21 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class CustomerDAOImpl implements IDao<Customer> {
     private final String filePath;
     private ConcurrentMap<String, Customer> customers;
 
-    public CustomerDAOImpl(String filePath) throws IOException {
-        this.filePath = filePath;
+    public CustomerDAOImpl() throws IOException {
+        this.filePath = "src/main/resources/ProjectData/customers.json";
         loadDataFromFile();
     }
 
     private void loadDataFromFile() throws IOException {
         Gson gson = new Gson();
+        customers = new ConcurrentHashMap<>();
         try (FileReader reader = new FileReader(filePath)) {
             Type customerListType = new TypeToken<List<Customer>>(){}.getType();
             List<Customer> customerList = gson.fromJson(reader, customerListType);
@@ -65,18 +67,17 @@ public class CustomerDAOImpl implements IDao<Customer> {
     }
 
     @Override
-    public boolean delete(int id) throws IOException {
-        if (!customers.containsKey(id)) {
+    public boolean delete(Customer customer) throws IOException {
+        if (!customers.containsKey(customer.getId())) {
             return false;
         } else {
-            customers.remove(id);
+            customers.remove(customer.getId());
             writeIntoFile();
             return true;
         }
     }
 
-    @Override
-    public Customer get(int id) throws IOException { return customers.get(id); }
+    public Customer get(String id) throws IOException { return customers.get(id); }
 
     @Override
     public List<Customer> getAll() throws IOException { return new ArrayList<>(customers.values()); }

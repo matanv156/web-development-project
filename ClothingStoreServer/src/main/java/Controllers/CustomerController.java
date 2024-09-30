@@ -3,46 +3,53 @@ package Controllers;
 import Models.Customer;
 import Services.CustomerServices;
 
+import java.io.IOException;
 import java.util.List;
 
 public class CustomerController {
     private final CustomerServices customerServices;
 
-    public CustomerController(CustomerServices customerServices) {
-        this.customerServices = customerServices;
+    public CustomerController() throws IOException {
+        this.customerServices = new CustomerServices();
     }
 
-    public void create(Customer customer) {
+    public boolean create(Customer customer) {
         System.out.println("CustomerController:: Start Create");
+        boolean succeeded = false;
         try {
-            customerServices.add(customer);
+            succeeded = customerServices.add(customer);
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("CustomerController:: Finish Create");
+        return succeeded;
     }
 
-    public void update(Customer customer) {
+    public boolean update(Customer customer) {
         System.out.println("CustomerController:: Start Update");
+        boolean succeeded = false;
         try {
-            customerServices.update(customer);
+            succeeded = customerServices.update(customer);
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("CustomerController:: Finish Update");
+        return succeeded;
     }
 
-    public void delete(Customer customer) {
+    public boolean delete(Customer customer) {
         System.out.println("CustomerController:: Start Delete");
+        boolean succeeded = false;
         try {
-            customerServices.delete(customer);
+            succeeded = customerServices.delete(customer);
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("CustomerController:: Finish Delete");
+        return succeeded;
     }
 
-    public Customer get(int id) {
+    public Customer get(String id) {
         System.out.println("CustomerController:: Start Get");
         Customer customer = null;
         try {

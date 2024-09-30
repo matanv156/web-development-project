@@ -8,8 +8,8 @@ import java.util.List;
 public class CustomerServices {
     private final CustomerDAOImpl customerDAO;
 
-    public CustomerServices(CustomerDAOImpl customerDAO) {
-        this.customerDAO = customerDAO;
+    public CustomerServices() throws IOException {
+        this.customerDAO = new CustomerDAOImpl();
     }
 
     public boolean add(Customer customer) throws IOException {
@@ -21,10 +21,10 @@ public class CustomerServices {
     }
 
     public boolean delete(Customer customer) throws IOException {
-        return customerDAO.delete(Integer.parseInt(customer.getId()));
+        return customerDAO.delete(customer);
     }
 
-    public Customer getById(int id) throws IOException {
+    public Customer getById(String id) throws IOException {
         return customerDAO.get(id);
     }
 

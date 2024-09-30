@@ -9,8 +9,8 @@ import java.util.List;
 public class ProductServices {
     private final ProductDAOImpl productDAO;
 
-    public ProductServices(ProductDAOImpl productDAO) {
-        this.productDAO = productDAO;
+    public ProductServices() throws IOException {
+        this.productDAO = new ProductDAOImpl();
     }
 
     public boolean add(Product product) throws IOException {
@@ -22,7 +22,7 @@ public class ProductServices {
     }
 
     public boolean delete(Product product) throws IOException {
-        return productDAO.delete(product.getId());
+        return productDAO.delete(product);
     }
 
     public Product getById(int id) throws IOException {

@@ -1,116 +1,83 @@
 package Server;
 
-import Controllers.BranchController;
-import Controllers.CustomerController;
-import Controllers.EmployeeController;
-import Controllers.ProductController;
-import Models.Branch;
-import Models.Customer;
-import Models.Employee;
-import Models.Enums.Actions;
-import Models.Enums.Controllers;
-import Models.Product;
+import Controllers.*;
+import Handlers.BranchRequestHandler;
+import Handlers.CustomerRequestHandler;
+import Handlers.EmployeeRequestHandler;
+import Handlers.ProductRequestHandler;
+import Models.*;
+import Models.Enums.*;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.Socket;
-import java.util.Map;
 
 public class ClientHandler implements Runnable {
-    private Socket socket;
-    private EmployeeController employeeController;
-    private BranchController branchController;
-    private ProductController productController;
-    private CustomerController customerController;
-    private ObjectInputStream input;
-    private ObjectOutputStream output;
+    private final Socket clientSocket;
+    private final BranchController branchController;
+    private final CustomerController customerController;
+    private final EmployeeController employeeController;
+    private final ProductController productController;
 
-    public ClientHandler(Socket socket, EmployeeController employeeController, BranchController branchController, ProductController productController, CustomerController customerController, ObjectInputStream input, ObjectOutputStream output) {
-        this.socket = socket;
-        this.employeeController = employeeController;
+    public ClientHandler(Socket clientSocket, BranchController branchController, CustomerController customerController, EmployeeController employeeController, ProductController productController) {
+        this.clientSocket = clientSocket;
         this.branchController = branchController;
-        this.productController = productController;
         this.customerController = customerController;
-        this.input = input;
-        this.output = output;
+        this.employeeController = employeeController;
+        this.productController = productController;
     }
 
     @Override
     public void run() {
         try {
-            input = new ObjectInputStream(socket.getInputStream());
-            output = new ObjectOutputStream(socket.getOutputStream());
-            while (true) {
-                String request = (String) input.readObject();
-                String response = handleRequest(request);
-                output.writeObject(response);
-            }
-        } catch (IOException | ClassNotFoundException e) {
+            Gson gson = new Gson();
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            String requestString = in.readLine();
+            Request request = gson.fromJson(requestString, Request.class);
+            String controller = request.getController();
+            String action = request.getAction();
+            JsonObject body = request.getBody();
+            String responseString = handleRequest(controller, action, body);
+            out.println(responseString);
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                socket.close();
+                clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    private String handleRequest(String request) {
-        String[] parts = request.split(":");
-        if (parts.length != 2) {
-            return "INVALID REQUEST FORMAT";
-        }
-        Controllers controller;
-        Actions action;
+
+    private String handleRequest(String controller, String action, JsonObject body) {
+        Gson gson = new Gson();
+        Response response = new Response();
         try {
-            controller = Controllers.valueOf(parts[0].toUpperCase());
-            action = Actions.valueOf(parts[1].toUpperCase());
+            switch (Controllers.valueOf(controller)) {
+                case BRANCHES:
+                    response = BranchRequestHandler.handleRequest(branchController, action, body);
+                    break;
+                case CUSTOMERS:
+                    response = CustomerRequestHandler.handleRequest(customerController, action, body);
+                    break;
+                case EMPLOYEES:
+                    response = EmployeeRequestHandler.handleRequest(employeeController, action, body);
+                    break;
+                case PRODUCTS:
+                    response = ProductRequestHandler.handleRequest(productController, action, body);
+                    break;
+            }
         } catch (IllegalArgumentException e) {
-            return "INVALID CONTROLLER OR ACTION";
+            response.setStatus("error");
+            response.setMessage("Invalid controller or action");
+        } catch (Exception e) {
+            response.setStatus("error");
+            response.setMessage("Internal server error");
+            e.printStackTrace();
         }
-        switch (controller) {
-            case EMPLOYEES:
-                return handleEmployeeRequest(action);
-            case BRANCHES:
-                return handleBranchRequest(action);
-            case PRODUCTS:
-                return handleProductRequest(action);
-            case CUSTOMERS:
-                return handleCustomerRequest(action);
-            default:
-                return "UNKNOWN CONTROLLER";
-        }
-    }
-    private String handleEmployeeRequest(Actions action) {
-        switch (action) {
-            case CREATE:
-                employeeController.create(getObject(request, Employee.class));
-                break;
-            case UPDATE:
-                employeeController.update(getObject(request, Employee.class));
-                break;
-            case DELETE:
-                employeeController.delete(getObject(request, Employee.class));
-                break;
-            case GET:
-                employeeController.get(getObject(request, Employee.class));
-                break;
-            case GET_ALL:
-                employeeController.getAll();
-                break;
-        }
-    }
-    private String handleBranchRequest(Actions action) {
-        // Similar implementation for branches
-        return "Branch action handled.";
-    }
-    private String handleProductRequest(Actions action) {
-        // Similar implementation for products
-        return "Product action handled.";
-    }
-    private String handleCustomerRequest(Actions action) {
-        // Similar implementation for customers
-        return "Customer action handled.";
+
+        return gson.toJson(response);
     }
 }

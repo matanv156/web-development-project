@@ -10,19 +10,21 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class ProductDAOImpl implements IDao<Product> {
     private final String filePath;
     private ConcurrentMap<Integer, Product> products;
 
-    public ProductDAOImpl(String filePath) throws IOException {
-        this.filePath = filePath;
+    public ProductDAOImpl() throws IOException {
+        this.filePath = "src/main/resources/ProjectData/products.json";
         loadDataFromFile();
     }
 
     private void loadDataFromFile() throws IOException {
         Gson gson = new Gson();
+        products = new ConcurrentHashMap<>();
         try (FileReader reader = new FileReader(filePath)) {
             Type productListType = new TypeToken<List<Product>>(){}.getType();
             List<Product> productList = gson.fromJson(reader, productListType);
@@ -65,17 +67,16 @@ public class ProductDAOImpl implements IDao<Product> {
     }
 
     @Override
-    public boolean delete(int id) throws IOException {
-        if (!products.containsKey(id)) {
+    public boolean delete(Product product) throws IOException {
+        if (!products.containsKey(product.getId())) {
             return false;
         } else {
-            products.remove(id);
+            products.remove(product.getId());
             writeIntoFile();
             return true;
         }
     }
 
-    @Override
     public Product get(int id) throws IOException { return products.get(id); }
 
     @Override

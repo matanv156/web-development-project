@@ -8,19 +8,21 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class BranchDAOImpl implements IDao<Branch> {
     private final String filePath;
     private ConcurrentMap<Integer, Branch> branches;
 
-    public BranchDAOImpl(String filePath) throws IOException {
-        this.filePath = filePath;
+    public BranchDAOImpl() throws IOException {
+        this.filePath = "src/main/resources/ProjectData/branches.json";
         loadDataFromFile();
     }
 
     private void loadDataFromFile() throws IOException {
         Gson gson = new Gson();
+        branches = new ConcurrentHashMap<>();
         try (FileReader reader = new FileReader(filePath)) {
             Type branchListType = new TypeToken<List<Branch>>(){}.getType();
             List<Branch> brancheList = gson.fromJson(reader, branchListType);
@@ -63,17 +65,16 @@ public class BranchDAOImpl implements IDao<Branch> {
     }
 
     @Override
-    public boolean delete(int id) throws IOException {
-        if (!branches.containsKey(id)) {
+    public boolean delete(Branch branch) throws IOException {
+        if (!branches.containsKey(branch.getId())) {
             return false;
         } else {
-            branches.remove(id);
+            branches.remove(branch.getId());
             writeIntoFile();
             return true;
         }
     }
 
-    @Override
     public Branch get(int id) throws IOException { return branches.get(id); }
 
     @Override

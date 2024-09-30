@@ -8,19 +8,21 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class EmployeeDAOImpl implements IDao<Employee> {
     private final String filePath;
     private ConcurrentMap<String, Employee> employees;
 
-    public EmployeeDAOImpl(String filePath) throws IOException {
-        this.filePath = filePath;
+    public EmployeeDAOImpl() throws IOException {
+        this.filePath = "src/main/resources/ProjectData/employees.json";
         loadDataFromFile();
     }
 
     private void loadDataFromFile() throws IOException {
         Gson gson = new Gson();
+        employees = new ConcurrentHashMap<>();
         try (FileReader reader = new FileReader(filePath)) {
             Type employeeListType = new TypeToken<List<Employee>>(){}.getType();
             List<Employee> employeeList = gson.fromJson(reader, employeeListType);
@@ -63,18 +65,17 @@ public class EmployeeDAOImpl implements IDao<Employee> {
     }
 
     @Override
-    public boolean delete(int id) throws IOException {
-        if (!employees.containsKey(id)) {
+    public boolean delete(Employee employee) throws IOException {
+        if (!employees.containsKey(employee.getId())) {
             return false;
         } else {
-            employees.remove(id);
+            employees.remove(employee.getId());
             writeIntoFile();
             return true;
         }
     }
 
-    @Override
-    public Employee get(int id) throws IOException { return employees.get(id); }
+    public Employee get(String id) throws IOException { return employees.get(id); }
 
     @Override
     public List<Employee> getAll() throws IOException { return new ArrayList<>(employees.values()); }

@@ -2,43 +2,51 @@ package Controllers;
 
 import Models.Product;
 import Services.ProductServices;
+
+import java.io.IOException;
 import java.util.List;
 
 public class ProductController {
     private final ProductServices productServices;
 
-    public ProductController(ProductServices productServices) {
-        this.productServices = productServices;
+    public ProductController() throws IOException {
+        this.productServices = new ProductServices();
     }
 
-    public void create(Product product) {
+    public boolean create(Product product) {
         System.out.println("ProductController:: Start Create");
+        boolean succeeded = false;
         try {
-            productServices.add(product);
+            succeeded = productServices.add(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("ProductController:: Finish Create");
+        return succeeded;
     }
 
-    public void update(Product product) {
+    public boolean update(Product product) {
         System.out.println("ProductController:: Start Update");
+        boolean succeeded = false;
         try {
-            productServices.update(product);
+            succeeded = productServices.update(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("ProductController:: Finish Update");
+        return succeeded;
     }
 
-    public void delete(Product product) {
+    public boolean delete(Product product) {
         System.out.println("ProductController:: Start Delete");
+        boolean succeeded = false;
         try {
-            productServices.delete(product);
+            succeeded = productServices.delete(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("ProductController:: Finish Delete");
+        return succeeded;
     }
 
     public Product get(int id) {
